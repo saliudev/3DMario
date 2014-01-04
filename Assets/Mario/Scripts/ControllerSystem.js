@@ -19,6 +19,7 @@ var canWalk							: boolean 			= true;						// enabled walking
 var canJog							: boolean 			= true;						// enabled jogging
 var canRun							: boolean 			= true;						// enabled running
 var canSprint						: boolean 			= true;						// enabled sprint
+var canBoost 						: boolean 			= true;						// enabled boost
 var canJumpAll						: boolean			= true;						// enabled any jump
 var canJump_1						: boolean			= true;						// enabled jump 1
 var canJump_2						: boolean			= true;						// enabled jump 2
@@ -47,6 +48,7 @@ var speedWalk						: float				= 3.0;						// maximum walking speed
 var speedJog						: float				= 5.0;						// maximum jogging speed
 var speedRun						: float				= 8.0;						// maximum running speed
 var speedSprint						: float				= 12.0;						// maximum sprint speed
+var speedBoost 						: float 			= 20.0;						// speed of boost
 var speedSlide						: float 			= 3.0;						// maximum sliding speed
 var speedPush						: float				= 1.5;						// maximum push speed
 var speedGrab						: float				= 2.0;						// maximum push speed
@@ -214,6 +216,7 @@ function UpdateMoveDirection 	() {												// motor, ani, and direction of pl
 		Jog    			();															// check for player jogging
 		Run    			();															// check for player running
 		Sprint 			();															// check for player sprinting
+		Boost 			();															// check for player boosting
 		Jump_1   		();															// check for player jumping 1
 		Jump_2   		();															// check for player jumping 2
 		Jump_3		   	();															// check for player jumping 3
@@ -308,6 +311,16 @@ function Sprint 				() {												// sprints player
 		}
 	}
 } 
+
+function Boost					() {												// moves player with extra speed
+	if( canBoost ) {																// enable boosting for player
+		if (moveSpeed > speedJog && moveSpeed < speedSprint && Input.GetKey("g")) {
+			moveSpeed = speedBoost;
+			Message ("Player Boosting");
+		}
+	}
+}
+
 function Jump_1 				() {												// default jump (if no combo, then defaults to this jump each time)
 	if ( canJumpAll )
 	{
