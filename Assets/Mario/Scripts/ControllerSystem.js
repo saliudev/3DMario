@@ -167,6 +167,7 @@ function Reset					() {												// reset all variables and options to null (0
 		Input.ResetInputAxes();														// stop all inputs if not controllable
 	}
 }
+
 function Awake 					() {												// before starting, get moveDirection forward from this.gameObject
 	moveDirection = transform.TransformDirection ( Vector3.forward ); 				// assign moveDirection local to world forward
 }
@@ -300,7 +301,12 @@ function Run 					() {												// runs player
 	}
 }
 function Sprint 				() {												// sprints player
-
+	if (canSprint) {																// enable sprint
+		if( moveSpeed > speedRun && moveSpeed <= speedSprint && Input.GetButton("Fire1")) {
+			animation.CrossFade ( aniSprint.name );
+			Message ("Ani State: Sprint");											// print current animation state
+		}
+	}
 } 
 function Jump_1 				() {												// default jump (if no combo, then defaults to this jump each time)
 	if ( canJumpAll )
