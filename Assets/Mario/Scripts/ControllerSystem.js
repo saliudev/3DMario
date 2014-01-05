@@ -364,9 +364,10 @@ function Jump_2					() {												// jump 2 in combo
 				curTime = Time.time;
 				animation.CrossFade(aniJump_2.name);
 				currentJumpHeight = jump_2;
-				inAirVelocity.y = currentJumpHeight;
-				isJumping_3 = true;
+				inAirVelocity.y = currentJumpHeight;				
 				Message( "Ani State: Jump 2 Combo" );
+				yield;																// wait one frame
+				isJumping_3 = true;
 			}
 			if (!isJumping_1 && isJumping_2 && !isJumping_3 && Time.time > (curTime + jumpComboTime)) {											// combo 2 missed, reseting
 				isJumping_1 = true;
@@ -378,7 +379,29 @@ function Jump_2					() {												// jump 2 in combo
 	}
 }
 function Jump_3					() {												// jump 3 in combo (final jump)
-
+	if (canJumpAll) {
+		if (!canJump_3 && isJumping_3) {
+			isJumping_1 = true;
+			isJumping_3 = false;
+		}
+		if (canJump_3) {
+			if (Input.GetButtonDown("Jump") && !isJumping_1 && !isJumping_2 && isJumping_3 && Time.time < (curTime + jumpComboTime)) {
+				isJumping_3 = false;
+				isJumping_1 = true;
+				curTime = Time.time;
+				animation.CrossFade(aniJump_3.name);
+				currentJumpHeight = jump_3;
+				inAirVelocity.y = currentJumpHeight;
+				Message("Ani State: Jump 3 - Combo ");
+			}
+			if (!isJumping_1 && !isJumping_2 && isJumping_3 && Time.time > (curTime + jumpComboTime)) {											// combo 3 missed
+				isJumping_3 = false;
+				isJumping_1 = true;
+				curTime = Time.time;
+				Message("Ani State: Missed Combo 3, reseting to jump 1");
+			}
+		}
+	}
 }
 function JumpFromCrouch			() {												// jump from crouch position
 
