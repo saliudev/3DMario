@@ -356,7 +356,26 @@ function Jump_1 				() {												// default jump (if no combo, then defaults 
 	}
 }
 function Jump_2					() {												// jump 2 in combo
-
+	if ( canJumpAll ) {
+		if (canJump_2) {
+			if (Input.GetButtonDown("Jump") && !isJumping_1 && isJumping_2 && !isJumping_3 && Time.time < (curTime + jumpComboTime) ) { 		// Got combo 2
+				isJumping_2 = false;
+				//isJumping_1 = true;
+				curTime = Time.time;
+				animation.CrossFade(aniJump_2.name);
+				currentJumpHeight = jump_2;
+				inAirVelocity.y = currentJumpHeight;
+				isJumping_3 = true;
+				Message( "Ani State: Jump 2 Combo" );
+			}
+			if (!isJumping_1 && isJumping_2 && !isJumping_3 && Time.time > (curTime + jumpComboTime)) {											// combo 2 missed, reseting
+				isJumping_1 = true;
+				isJumping_2 = false;
+				curTime = Time.time;
+				Message("Ani State: Missed como 2, reseting to jump 1");
+			}
+		}
+	}
 }
 function Jump_3					() {												// jump 3 in combo (final jump)
 
