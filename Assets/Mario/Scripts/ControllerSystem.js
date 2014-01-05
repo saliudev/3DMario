@@ -24,6 +24,7 @@ var canJumpAll						: boolean			= true;						// enabled any jump
 var canJump_1						: boolean			= true;						// enabled jump 1
 var canJump_2						: boolean			= true;						// enabled jump 2
 var canJump_3						: boolean			= true;						// enabled jump 3
+var canJumpFromAir					: boolean			= true;						// enabled jumping from air
 var canJumpFromCrouch				: boolean			= true;						// enabled jumping from crouch
 var canJumpFromObject 				: boolean			= true;						// enabled jumping off object
 var canControlDecent				: boolean			= true;						// enabled controlling decent
@@ -66,6 +67,7 @@ var jump_1							: float				= 8.0;						// height for first jump
 var jump_2							: float				= 10.0;						// height for second jump
 var jump_3							: float				= 15.0;						// height for third jump
 
+var jumpFromAir 					: float				= 20.0;						// height for jump from air
 var jumpFromCrouch					: float 			= 14.0;						// height for jump from crouch
 var jumpFromObject					: float 			= 8.0;						// height for jump from object
 var jumpFromObjectTag 				: String 			= "wall";					// tag name of object player can jump from
@@ -233,11 +235,13 @@ function UpdateMoveDirection 	() {												// motor, ani, and direction of pl
 	else																			// if player is in air 
 	{										
 		inAirVelocity += targetDirection.normalized * Time.deltaTime * speedInAir;	// if in air, move player down based on velocity, direction, time and speed
-		JumpFromObject ();															// check for player jumping from objects tagged 'wall'
+		JumpFromAir		();															// check for player jumping from the air
+		JumpFromObject  ();															// check for player jumping from objects tagged 'wall'
 		Fall ();																	// check if player is falling from jump		
 	}
 	Killzone ();																	// check for player triggering killzone box
 }
+
 function Update 				() {												// loop for controller
 	if ( isControllable )															// if player controllable, then move character
 	{
@@ -273,6 +277,7 @@ function Idle 					() {												// idles player
 		Message ( "Ani State: Idle" );												// print current animation state
 	}	
 }
+
 function Walk 					() {												// walks player
 	if ( canWalk )
 	{
@@ -283,6 +288,7 @@ function Walk 					() {												// walks player
 		}
 	}
 }
+
 function Jog	 				() {												// jogs player
 	if ( canJog )
 	{
@@ -293,6 +299,7 @@ function Jog	 				() {												// jogs player
 		}
 	}
 }
+
 function Run 					() {												// runs player
 	if ( canRun )
 	{
@@ -303,6 +310,7 @@ function Run 					() {												// runs player
 		}
 	}
 }
+
 function Sprint 				() {												// sprints player
 	if (canSprint) {																// enable sprint
 		if( moveSpeed > speedRun && moveSpeed <= speedSprint && Input.GetButton("Fire1")) {
@@ -355,6 +363,7 @@ function Jump_1 				() {												// default jump (if no combo, then defaults 
 		}
 	}
 }
+
 function Jump_2					() {												// jump 2 in combo
 	if ( canJumpAll ) {
 		if (canJump_2) {
@@ -378,6 +387,7 @@ function Jump_2					() {												// jump 2 in combo
 		}
 	}
 }
+
 function Jump_3					() {												// jump 3 in combo (final jump)
 	if (canJumpAll) {
 		if (!canJump_3 && isJumping_3) {
@@ -403,18 +413,36 @@ function Jump_3					() {												// jump 3 in combo (final jump)
 		}
 	}
 }
+
+function JumpFromAir 			() {
+	if (canJumpAll) {
+		if (canJumpFromAir) {
+			if (!IsGrounded()) {													// The character is in the air
+				if (Input.GetButtonDown("Jump")) {
+					currentJumpHeight = jumpFromAir;
+					inAirVelocity.y = currentJumpHeight;
+				}
+			}
+		}
+	}
+}
+
 function JumpFromCrouch			() {												// jump from crouch position
 
 }
+
 function JumpFromObject			() {												// jumping from an object
 
 }
+
 function JumpPad				() {												// jump from crouch position
 
 }
+
 function AngleSlide				() {												// sliding if slope (angle) too much
 
 }
+
 function IdleRotate				() {												// turn left/right while in idle 
 	if ( canIdleRotate )															// toggle idle rotate (turn left / right)
 	{
@@ -432,9 +460,11 @@ function IdleRotate				() {												// turn left/right while in idle
 		}
 	}
 }
+
 function Crouch					() {												// crouch player
 
 }
+
 function Fall					() {												// player is in the air
 	if ( canFall )
 	{
@@ -445,12 +475,15 @@ function Fall					() {												// player is in the air
 		}
 	}
 }
+
 function Attack					() {												// player jumps on enemy head - with feet
 
 }
+
 function Hurt					() {												// player hurt by enemy objects
 
 }
+
 function Killzone				() {												// player killed if in this area, respawn at start
 	if ( canKillzone )																// toggle killzone areas
 	{
@@ -474,6 +507,7 @@ function Killzone				() {												// player killed if in this area, respawn a
 		}
 	}
 }
+
 function Push 					() {												// player can push objects by moving in to them
 	if ( canPush )																	// toggle push
 	{
@@ -510,17 +544,21 @@ function Push 					() {												// player can push objects by moving in to th
 		}
 	}
 }
+
 function Grab					() {												// player can grab objects
 
 }
+
 function ShowPlayer				() {												// turn player rendering mesh 'on'
 	skinMeshRenderer.enabled 	= true;
 	isControllable				= true;
 }
+
 function HidePlayer				() {												// turn player rendering mesh 'off'
 	skinMeshRenderer.enabled 	= false;
 	isControllable 				= false;
 }
+
 function KeyboardMovementSpeed 	() {												// controls for keyboard movement/speed
 	if ( keyboardControls )															// enable keyboard controls if no joystick
 	{
@@ -567,26 +605,31 @@ function KeyboardMovementSpeed 	() {												// controls for keyboard movemen
 }
 
 function IsGrounded 			() {												// check if player is touching the ground or a collision flag
-return ( collisionFlags & CollisionFlags.CollidedBelow ) != 0;					// if isGround not equal to 0 if it doesn't equal 0
+	return ( collisionFlags & CollisionFlags.CollidedBelow ) != 0;					// if isGround not equal to 0 if it doesn't equal 0
 }
+
 function SetGravity				() {												// sets gravity to 0 for ground and subtracts if in air
 	if ( IsGrounded () )
 		verticalSpeed = 0.0;														// stop subtracting, if player on ground set to 0
 	else
 		verticalSpeed -= gravity * Time.deltaTime;									// if character in air, begin moving downward
 }
+
 function Message ( text : String ) {												// debug mode handling for development - easy toggle on/off
 	if ( DebugMode )
 		Debug.Log ( text );
 }
+
 function Message ( text : float )  {												// debug mode handling for development - easy toggle on/off
 	if ( DebugMode )
 		Debug.Log ( text );
 }
+
 function Message ( text : int )    {												// debug mode handling for development - easy toggle on/off
 	if ( DebugMode )
 		Debug.Log ( text );
 }
+
 function AnimationClipCheck 	() {												// in debug mode, check for clip, if null, put in default ani
 	if ( !DebugMode ) return;
 	
@@ -611,6 +654,7 @@ function AnimationClipCheck 	() {												// in debug mode, check for clip, i
 	if ( aniGrabIdle	 	== null ) {	Debug.Log ( "Missing Animation Clip: grabIdle, adding default"  		); aniGrabIdle		 = animation.clip; }
 	if ( aniPush	 		== null ) {	Debug.Log ( "Missing Animation Clip: aniPush, adding default"  			); aniPush	 		 = animation.clip; }
 }
+
 function ExampleShowHidePlayer 	() {												// example show hide player - shown in update function 
 	if ( Input.GetKeyDown ( "h" ) )													// example of showPlayer function toggle
 	{
@@ -619,15 +663,19 @@ function ExampleShowHidePlayer 	() {												// example show hide player - sh
 		if ( !showPlayer ) HidePlayer ();											// hide player (render mesh off)
 	}
 }
+
 function OnTriggerEnter ( other : Collider ) {										// trigger events for coin, key, bridge, jumpPad
 	
 }
+
 function OnTriggerStay  ( other : Collider ) {										// trigger event while in collider (for platforms)
 
 }
+
 function OnTriggerExit  ( other : Collider ) {										// trigger even when leaving collider (for platforms)
 
 }
+
 function OnControllerColliderHit ( hit : ControllerColliderHit ) {					// check for raycast hit from controller
 	Debug.DrawRay ( hit.point, hit.normal );										// draw line showing direction of ray cast
 	if ( hit.moveDirection.y > 0.01 && isJumping_3 ) 								// if player hits head (top collider) then let's move player down so it doesn't hang in the checking for jump3 as well
