@@ -462,7 +462,40 @@ function IdleRotate				() {												// turn left/right while in idle
 }
 
 function Crouch					() {												// crouch player
-
+	if (canCrouch) {
+		if (canCrouchHoldKeyDown) {
+			if (Input.GetButton("Crouch")) {
+				isCrouching = true;
+			}
+			else {
+				isCrouching = false;
+			}
+		}
+		else {
+			if (Input.GetButtonDown ("Crouch")) {
+				isCrouching = !isCrouching;
+			}
+		}
+		if (isCrouching) {
+			moveSpeed = speedCrouch;
+			characterController.height = crouchControllerHeight;
+			characterController.center.y = crouchControllerCenterY;
+			canJump = false;
+			animation.CrossFade(aniCrouchIdle.name);
+			Message("Ani State: Crouch");
+		}
+		if (Input.GetButtonUp("Crouch")) {
+			resetCharController = true;
+		}
+		if (resetCharController) {
+			var tempGravity : float = gravity;
+			gravity = 0;
+			resetCharController = false;
+			characterController.height = controllerHeightDefault;
+			characterController.center.y = controllerCenterYDefault;
+			gravity = tempGravity;
+		}
+	}
 }
 
 function Fall					() {												// player is in the air
