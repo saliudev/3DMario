@@ -428,7 +428,15 @@ function JumpFromAir 			() {
 }
 
 function JumpFromCrouch			() {												// jump from crouch position
-
+	if (canJumpFromCrouch) {														// toggle jumping from crouch
+		if (isCrouching && Input.GetButtonDown("Jump")) {							// check for is crouching and button down
+			isCrouching = false;													// set crouch for false
+			animation.CrossFade( aniJumpFromCrouch.name );							// play animation
+			currentJumpHeight = jumpFromCrouch;										// set current jump height
+			inAirVelocity.y = currentJumpHeight;									// set air vel y to current height
+			Message("Ani State: Jump From Crouch");									// print state of animation
+		}
+	}
 }
 
 function JumpFromObject			() {												// jumping from an object
