@@ -443,8 +443,16 @@ function JumpFromObject			() {												// jumping from an object
 
 }
 
-function JumpPad				() {												// jump from crouch position
-
+function JumpPad				() {												// jump from pad position
+	if(canJumpFromPad) {															// toggle jumping from a pad position
+		if (jumpingFromPad) {														// check for trigger on a jumppad
+			jumpingFromPad = false;													// reset
+			animation.CrossFade(aniJumpFall.name);									// play animation
+			currentJumpHeight = jumpFromCrouch;										// set current jump height
+			inAirVelocity.y = currentJumpHeight;									// set air vel y to current height
+			Message("Ani State: Jump from pad");									// print state of animation
+		}
+	}
 }
 
 function AngleSlide				() {												// sliding if slope (angle) too much
@@ -706,7 +714,19 @@ function ExampleShowHidePlayer 	() {												// example show hide player - sh
 }
 
 function OnTriggerEnter ( other : Collider ) {										// trigger events for coin, key, bridge, jumpPad
-	
+	if (other.tag == "jumpPad") {													// check if it is the jump pad
+		jumpingFromPad = true;														// set to true
+		isJumping_1 = false;														// reset
+		isJumping_2 = false;
+		isJumping_3 = false;
+		Message("JumpPad activated!");
+
+		if (other.animation != null) {												// play the pad animation
+			other.animation.Play("jumpPad_up");
+			yield WaitForSeconds(0.3);
+			other.animation.Play("jumpPad_down");
+		}
+	}	
 }
 
 function OnTriggerStay  ( other : Collider ) {										// trigger event while in collider (for platforms)
@@ -714,7 +734,9 @@ function OnTriggerStay  ( other : Collider ) {										// trigger event while i
 }
 
 function OnTriggerExit  ( other : Collider ) {										// trigger even when leaving collider (for platforms)
-
+	if(other.tag == "jumpPad") {
+		jumpingFromPad = false;
+	}
 }
 
 function OnControllerColliderHit ( hit : ControllerColliderHit ) {					// check for raycast hit from controller
