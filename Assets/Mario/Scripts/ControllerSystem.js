@@ -771,6 +771,10 @@ function OnTriggerEnter ( other : Collider ) {										// trigger events for co
 			yield WaitForSeconds(0.3);
 			other.animation.Play("jumpPad_down");
 		}
+	}
+
+	if(other.tag == "killzone") {
+		isKilled = true;
 	}	
 }
 
