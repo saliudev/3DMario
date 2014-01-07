@@ -440,7 +440,27 @@ function JumpFromCrouch			() {												// jump from crouch position
 }
 
 function JumpFromObject			() {												// jumping from an object
-
+	if (canJumpFromObject) {
+		if (!IsGrounded() && jumpableObject && Input.GetButtonDown("Jump")) {
+			jumpableObject = false;
+			if(collisionFlags == CollisionFlags.Sides) {
+				isJumping_1 = true;
+				isJumping_2 = false;
+				isJumping_3 = false;
+			}
+			if (Mathf.Abs(objectJumpContactNormal.y) < 0.2) {
+				animation.Play(aniJumpFromObject.name);
+				Message("Ani State: Jump from object");
+				objectJumpContactNormal.y = 0;
+				moveDirection = objectJumpContactNormal.normalized;
+				moveSpeed = speedJumpFromObject;
+			}
+			else
+				moveSpeed = 0;
+			verticalSpeed = 0.02;
+			inAirVelocity.y = jumpFromObject;
+		}
+	}
 }
 
 function JumpPad				() {												// jump from pad position
@@ -747,6 +767,7 @@ function OnControllerColliderHit ( hit : ControllerColliderHit ) {					// check 
 		Message ( "Player hit top (head) collider. Moving back down" );				// print player hit head
 		return;																		// return out
 	}
+
 	if ( hit.collider.tag == jumpFromObjectTag ) 									// if hit tag is equal to the wall tag
 		jumpableObject = true;														// set jump object true
 	
