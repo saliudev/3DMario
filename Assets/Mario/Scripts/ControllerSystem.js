@@ -476,7 +476,32 @@ function JumpPad				() {												// jump from pad position
 }
 
 function AngleSlide				() {												// sliding if slope (angle) too much
+	if(canAngleSlide) {
+		var hitInfo	: RaycastHit;
+		slideDirection = Vector3.zero;
+		if(Physics.Raycast(transform.position, Vector3.down, hitInfo)) {
+			if (hitInfo.collider.tag != slideTag) {
+				return;
+			}
+			if (hitInfo.normal.y < slideThreshold) {
+				slideDirection = new Vector3 (hitInfo.normal.x, 0, hitInfo.normal.z);
+			}
+		}
 
+		if (slideDirection.magnitude < slideControllableSpeed) {
+			moveDirection += slideDirection;
+		}
+		else {
+			moveDirection = slideDirection;
+		}
+
+		if (slideDirection.magnitude > 0)											// player is sliding
+		{
+			moveSpeed = speedSlide;
+			animation.CrossFade (aniSlide.name);									// play the animation
+			Message("Ani State: Sliding Down");
+		}
+	}
 }
 
 function IdleRotate				() {												// turn left/right while in idle 
