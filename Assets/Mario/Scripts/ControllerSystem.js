@@ -773,9 +773,15 @@ function OnTriggerEnter ( other : Collider ) {										// trigger events for co
 		}
 	}
 
-	if(other.tag == "killzone") {
+	if (other.tag == "killzone") {
 		isKilled = true;
 	}	
+
+	if (other.tag == "coin") {
+		coin += 1;
+		Destroy(other.gameObject);
+		Message("You have collected " + coin + " coins");
+	}
 }
 
 function OnTriggerStay  ( other : Collider ) {										// trigger event while in collider (for platforms)
@@ -820,8 +826,8 @@ function OnControllerColliderHit ( hit : ControllerColliderHit ) {					// check 
 }
 
 function OnGUI 					() {												// quick gui for coins and key display
-	GUI.Box   ( Rect ( 0,0, 100, 60  ), "" );										// gui box for background	
-	GUI.Label ( Rect ( 10,5,100,100  ), "Health: " + health );						// gui label to show coin and current value
-	GUI.Label ( Rect ( 10,20,100,100 ), "Coins: "  + coin   );						// gui label to show coin and current value
-	GUI.Label ( Rect ( 10,35,100,100 ), "Keys: "   + key    );						// gui label to show key and current value
+	GUI.Box   ( Rect ( 0, 0, 100, 60 ), "" );										// gui box for background	
+	GUI.Label ( Rect ( 10, 5, 100, 100 ), "Health: " + health );						// gui label to show coin and current value
+	GUI.Label ( Rect ( 10, 20, 100, 100 ), "Coins: "  + coin   );						// gui label to show coin and current value
+	GUI.Label ( Rect ( 10, 35, 100, 100 ), "Keys: "   + key    );						// gui label to show key and current value
 }
