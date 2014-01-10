@@ -803,12 +803,20 @@ function OnTriggerEnter ( other : Collider ) {										// trigger events for co
 }
 
 function OnTriggerStay  ( other : Collider ) {										// trigger event while in collider (for platforms)
-
+	if (other.tag == "platform") {
+		this.transform.parent = other.transform.parent;
+		Message("Jump to the platform");
+	}
 }
 
 function OnTriggerExit  ( other : Collider ) {										// trigger even when leaving collider (for platforms)
 	if(other.tag == "jumpPad") {
 		jumpingFromPad = false;
+	}
+
+	if (other.tag == "platform") {
+		this.transform.parent = null;
+		Message("Get off the platform");
 	}
 }
 
