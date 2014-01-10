@@ -782,6 +782,24 @@ function OnTriggerEnter ( other : Collider ) {										// trigger events for co
 		Destroy(other.gameObject);
 		Message("You have collected " + coin + " coins");
 	}
+
+	if (other.tag == "key") {
+		key += 1;
+		Destroy(other.gameObject);
+		Message("You have collected" + key + " keys");
+	}
+
+	if (other.tag == "bridge") {
+		if (key < 2) {
+			Message("You need 2 keys to unlock the bridge");
+		}
+
+		if (key == 2) {
+			key = 0;
+			other.animation.Play ("bridge_down");
+			Message("Your keys unlocked the bridge");
+		}
+	}
 }
 
 function OnTriggerStay  ( other : Collider ) {										// trigger event while in collider (for platforms)
