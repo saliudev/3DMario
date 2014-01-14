@@ -15,9 +15,12 @@ static var isGrabbing 		: boolean = false;									// toggle for grabbing
 function Update 		() {													// loop through events
 	Grab ();
 }
+
 function Grab 			() {													// grab system
+	
 	if ( isPickingUp && Input.GetButtonDown ( "Fire1" )  )						// grab object
 	{	
+
 		isPickingUp = false;													// disable picking up
 		Destroy ( otherObject.gameObject.GetComponent( "Rigidbody" ) );			// get rid of the rigidbody to player can pickup object with no issues
 		otherObject.transform.parent = transform;								// set other objects parent to players object (colliderGrab)
@@ -47,7 +50,9 @@ function OnTriggerEnter ( other : Collider ) {									// trigger events for col
 		otherObject = other.transform;											// set other object to collided object
 		isPickingUp = true;														// enable picking up 
 		grabs = true;															// enable grabs
-	}
+	
+		print("pickup");
+	} 	
 }
 function OnTriggerExit 	( other : Collider ) {									// trigger event for exiting collider
 	if ( other.tag == "grab" )													// if collider equals grabbing object
