@@ -585,6 +585,18 @@ function Fall					() {												// player is in the air
 }
 
 function Attack					() {												// player jumps on enemy head - with feet
+	if (canAttack) {
+		if (colliderAttack == null) {
+			Message("Need colliderAttack assigned");
+			return;
+		}
+		if (ControllerColliderAttack.isAttacking) {
+			ControllerColliderAttack.isAttacking = false;
+			inAirVelocity.y = 10;
+			animation.Play(aniJump_2.name);
+			Message("Player attacked and killed enemy");
+		}
+	}
 
 }
 
