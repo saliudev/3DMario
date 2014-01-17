@@ -206,8 +206,8 @@ function UpdateMoveDirection 	() {												// motor, ani, and direction of pl
 			moveDirection = Vector3.Lerp ( moveDirection, targetDirection, smoothDirection * Time.deltaTime );	// smooth camera follow player direction
 			moveDirection = moveDirection.normalized;								// normalize (set to 0-1 value)
 		}	
-		print("targetDirection: " + targetDirection);
-		Message("UpdateMoveDirection: " + moveDirection);
+		//print("targetDirection: " + targetDirection);
+		//Message("UpdateMoveDirection: " + moveDirection);
 		var currentSmooth : float = speedSmoothing * Time.deltaTime;				// smooth currentSpeed based on current target direction
 		
 		targetSpeed = Mathf.Min ( targetDirection.magnitude, 1.0 ); 				// set targetSpeed limit for diagonal movement
@@ -287,7 +287,7 @@ function Walk 					() {												// walks player
 		if ( moveSpeed > speedIdleMax && moveSpeed < speedJog )						// check that speed is within walk range
 		{
 			animation.CrossFade ( aniWalk.name );									// play animation
-			Message ( "Ani State: Walk " + moveSpeed );								// print current animation state
+			//Message ( "Ani State: Walk " + moveSpeed );								// print current animation state
 		}
 	}
 }
@@ -482,39 +482,37 @@ function JumpPad				() {												// jump from pad position
 function AngleSlide				() {												// sliding if slope (angle) too much
 	if(canAngleSlide) {
 		Message("AngleSlide");
-		var hitInfo	: RaycastHit;
 		slideDirection = Vector3.zero;
+		var hitInfo	: RaycastHit;
 		if(Physics.Raycast(transform.position, Vector3.down, hitInfo)) {
-			Message("Herererere");
+			// Message("Herererere");
 			if (hitInfo.collider.tag != slideTag) {
-				print("hitInfo.collider.tag: " + hitInfo.collider.tag);
 				return;
 			}
-			
+		//	print("hitInfo.collider.tag: " + hitInfo.collider.tag);
 			if (hitInfo.normal.y < slideThreshold) {
-				print("not return");
+				//print("not return");
 				slideDirection = new Vector3 (hitInfo.normal.x, 0, hitInfo.normal.z);
 			}			
 		}
 		if (slideDirection.magnitude < slideControllableSpeed) {
-				print("not return");
-				Message("Herererere <");
+				// print("not return");
+				// Message("Herererere <");
 				moveDirection += slideDirection;
-			}
-			else {
-				print("not return");
-				Message("Herererere else");
+		}
+		else {
+				// print("not return");
+				// Message("Herererere else");
 				moveDirection = slideDirection;
-			}
-
-			if (slideDirection.magnitude > 0)											// player is sliding
-			{
-				print("not return");
-				moveSpeed = speedSlide;
-				animation.CrossFade (aniSlide.name);									// play the animation
-				Message("Ani State: Sliding Down");
-			}		
-
+		}
+		if (slideDirection.magnitude > 0)											// player is sliding
+		{
+			//	print("not return");
+			moveSpeed = speedSlide;
+			//animation.CrossFade(aniSlide.name);									// play the animation
+			animation.Play(aniJumpFromObject.name);
+			Message("Ani State: Sliding Down" + moveSpeed);
+		}		
 	}
 }
 
@@ -597,11 +595,27 @@ function Attack					() {												// player jumps on enemy head - with feet
 			Message("Player attacked and killed enemy");
 		}
 	}
-
 }
 
 function Hurt					() {												// player hurt by enemy objects
-
+	if (canHurt) {
+		if (colliderHurt == null) {
+			Message("Need Collider hurt assigned");
+			return;
+		}
+		if (ControllerColliderHurt.enemyHit) {
+			ControllerColliderHurt.enemyHit = false;
+			inAirVelocity = transform.TransformDirection(hitDirection);
+			animation.Play(aniJumpLand.name);
+			health -= ControllerColliderHurt.damageAmount;
+			yield;
+			if (health <= 0){
+				isKilled = true;
+				Message ("Player was killed, starting over");
+			}
+			Message("Player was hurt");
+		}
+	}
 }
 
 function Killzone				() {												// player killed if in this area, respawn at start
